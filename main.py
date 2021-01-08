@@ -2,48 +2,70 @@ import pygame
 from pygame.locals import *
 
 
-def draw_block():
-    surface.fill((71, 110, 5))
-    surface.blit(block, (block_x, block_y))
-    pygame.display.flip()
+class Snake:
+    def __init__(self, parent_screen):
+        self.parent_screen = parent_screen
+        self.block = pygame.image.load("resources/block.jpg").convert()
+        self.block_x = 100
+        self.block_y = 50
+
+    def draw(self):
+        self.parent_screen.fill((71, 110, 5))
+        self.parent_screen.blit(self.block, (self.block_x, self.block_y))
+        pygame.display.flip()
+
+    def move_up(self):
+        self.block_y -= 10
+        self.draw()
+
+    def move_down(self):
+        self.block_y += 10
+        self.draw()
+
+    def move_left(self):
+        self.block_x -= 10
+        self.draw()
+
+    def move_right(self):
+        self.block_x += 10
+        self.draw()
+
+
+class Game:
+    def __init__(self):
+        pygame.init()
+        # This will set the size of the game window
+        self.surface = pygame.display.set_mode((1000, 500))
+
+        # This will set the color of window
+        self.surface.fill((71, 110, 5))
+
+        self.snake = Snake(self.surface)
+        self.snake.draw()
+
+    def run(self):
+
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+
+                    if event.key == K_ESCAPE:
+                        running = False
+
+                    if event.key == K_UP:
+                        self.snake.move_up()
+                    if event.key == K_DOWN:
+                        self.snake.move_down()
+                    if event.key == K_LEFT:
+                        self.snake.move_left()
+                    if event.key == K_RIGHT:
+                        self.snake.move_right()
+
+                elif event.type == QUIT:
+                    running = False
 
 
 if __name__ == '__main__':
-    pygame.init()
-
-    # This will set the size of the game window
-    surface = pygame.display.set_mode((1000, 500))
-
-    # This will set the color of window
-    surface.fill((71, 110, 5))
-
-    block = pygame.image.load("resources/block.jpg").convert()
-    block_x = 100
-    block_y = 50
-    surface.blit(block, (block_x, block_y))
-    pygame.display.flip()
-
-    # Code for exiting the window
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == KEYDOWN:
-
-                if event.key == K_ESCAPE:
-                    running = False
-
-                if event.key == K_UP:
-                    block_y -= 10
-                    draw_block()
-                if event.key == K_DOWN:
-                    block_y += 10
-                    draw_block()
-                if event.key == K_LEFT:
-                    block_x -= 10
-                    draw_block()
-                if event.key == K_RIGHT:
-                    block_x += 10
-                    draw_block()
-
-            elif event.type == QUIT:
-                running = False
+    game = Game()
+    game.run()
